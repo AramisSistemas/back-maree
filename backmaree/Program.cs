@@ -73,6 +73,7 @@ builder.Services.AddScoped<ILoggService, LoggService>();
 builder.Services.AddScoped<IStoreProcedure, StoreProcedure>();
 builder.Services.AddScoped<IUserService, UserService>(); 
 builder.Services.AddScoped<SecurityService>();
+builder.Services.AddScoped<IStockService, StockService>();
 
 builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

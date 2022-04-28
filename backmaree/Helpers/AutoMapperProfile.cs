@@ -1,6 +1,7 @@
 using AutoMapper;
 using backmaree.Models;
 using backmaree.Modelsdtos.Commons;
+using backmaree.Modelsdtos.Stock;
 using backmaree.Modelsdtos.Users;
 
 namespace backmaree.Helpers
@@ -14,6 +15,13 @@ namespace backmaree.Helpers
             CreateMap<EditUser, User>().ReverseMap();
             CreateMap<UserPerfil, PerfilModel>().ReverseMap();
             CreateMap<LoggModel, UserLog>().ReverseMap();
+
+            //stock
+           
+            CreateMap<Producto, ProductoBaseDto>().ReverseMap();
+            CreateMap<ProductoBase, ProductoBaseDto>().ReverseMap();
+            CreateMap<ProductoDetalle, ProductoBaseDto>().ReverseMap();
+
         }
     }
 }

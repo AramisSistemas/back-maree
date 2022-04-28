@@ -19,6 +19,12 @@ namespace backmaree.Models
         public virtual DbSet<Cliente> Clientes { get; set; } = null!;
         public virtual DbSet<ClienteGenero> ClienteGeneros { get; set; } = null!;
         public virtual DbSet<ClienteResponsabilidad> ClienteResponsabilidads { get; set; } = null!;
+        public virtual DbSet<Producto> Productos { get; set; } = null!;
+        public virtual DbSet<ProductoBase> ProductoBases { get; set; } = null!;
+        public virtual DbSet<ProductoDetalle> ProductoDetalles { get; set; } = null!;
+        public virtual DbSet<ProductoIva> ProductoIvas { get; set; } = null!;
+        public virtual DbSet<ProductoRubro> ProductoRubros { get; set; } = null!;
+        public virtual DbSet<ProductoUbicacion> ProductoUbicacions { get; set; } = null!;
         public virtual DbSet<ProveedorImputacion> ProveedorImputacions { get; set; } = null!;
         public virtual DbSet<SystemOption> SystemOptions { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
@@ -123,6 +129,121 @@ namespace backmaree.Models
                 entity.ToTable("ClienteResponsabilidad");
 
                 entity.Property(e => e.Id)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Producto>(entity =>
+            {
+                entity.ToTable("Producto");
+
+                entity.Property(e => e.Codigo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Costo).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Detalle)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Tasa).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.IvaNavigation)
+                    .WithMany(p => p.Productos)
+                    .HasForeignKey(d => d.Iva)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Producto_Iva");
+
+                entity.HasOne(d => d.RubroNavigation)
+                    .WithMany(p => p.Productos)
+                    .HasForeignKey(d => d.Rubro)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Producto_Rubro");
+            });
+
+            modelBuilder.Entity<ProductoBase>(entity =>
+            {
+                entity.ToTable("ProductoBase");
+
+                entity.Property(e => e.Codigo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Costo).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Detalle)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Internos).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Stock).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Tasa).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.IvaNavigation)
+                    .WithMany(p => p.ProductoBases)
+                    .HasForeignKey(d => d.Iva)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProductoBase_Iva");
+
+                entity.HasOne(d => d.RubroNavigation)
+                    .WithMany(p => p.ProductoBases)
+                    .HasForeignKey(d => d.Rubro)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProductoBase_Rubro");
+
+                entity.HasOne(d => d.UbicacionNavigation)
+                    .WithMany(p => p.ProductoBases)
+                    .HasForeignKey(d => d.Ubicacion)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProductoBase_Ubicacion");
+            });
+
+            modelBuilder.Entity<ProductoDetalle>(entity =>
+            {
+                entity.ToTable("ProductoDetalle");
+
+                entity.Property(e => e.Cantidad).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.ProductoFkNavigation)
+                    .WithMany(p => p.ProductoDetalles)
+                    .HasForeignKey(d => d.ProductoFk)
+                    .HasConstraintName("FK_ProductoDetalle_ProductoFk");
+
+                entity.HasOne(d => d.ProductobaseFkNavigation)
+                    .WithMany(p => p.ProductoDetalles)
+                    .HasForeignKey(d => d.ProductobaseFk)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProductoDetalle_ProductobaseFk");
+            });
+
+            modelBuilder.Entity<ProductoIva>(entity =>
+            {
+                entity.ToTable("ProductoIva");
+
+                entity.Property(e => e.Tasa).HasColumnType("decimal(18, 2)");
+            });
+
+            modelBuilder.Entity<ProductoRubro>(entity =>
+            {
+                entity.ToTable("ProductoRubro");
+
+                entity.Property(e => e.Detalle)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<ProductoUbicacion>(entity =>
+            {
+                entity.ToTable("ProductoUbicacion");
+
+                entity.Property(e => e.Codigo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Detalle)
                     .HasMaxLength(50)
                     .IsUnicode(false);
             });
