@@ -20,7 +20,6 @@ namespace backmaree.Models
         public virtual DbSet<ClienteGenero> ClienteGeneros { get; set; } = null!;
         public virtual DbSet<ClienteResponsabilidad> ClienteResponsabilidads { get; set; } = null!;
         public virtual DbSet<Producto> Productos { get; set; } = null!;
-        public virtual DbSet<ProductoBase> ProductoBases { get; set; } = null!;
         public virtual DbSet<ProductoDetalle> ProductoDetalles { get; set; } = null!;
         public virtual DbSet<ProductoIva> ProductoIvas { get; set; } = null!;
         public virtual DbSet<ProductoRubro> ProductoRubros { get; set; } = null!;
@@ -147,6 +146,10 @@ namespace backmaree.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Internos).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Stock).HasColumnType("decimal(18, 2)");
+
                 entity.Property(e => e.Tasa).HasColumnType("decimal(18, 2)");
 
                 entity.HasOne(d => d.IvaNavigation)
@@ -160,45 +163,12 @@ namespace backmaree.Models
                     .HasForeignKey(d => d.Rubro)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Producto_Rubro");
-            });
-
-            modelBuilder.Entity<ProductoBase>(entity =>
-            {
-                entity.ToTable("ProductoBase");
-
-                entity.Property(e => e.Codigo)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Costo).HasColumnType("decimal(18, 2)");
-
-                entity.Property(e => e.Detalle)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Internos).HasColumnType("decimal(18, 2)");
-
-                entity.Property(e => e.Stock).HasColumnType("decimal(18, 2)");
-
-                entity.Property(e => e.Tasa).HasColumnType("decimal(18, 2)");
-
-                entity.HasOne(d => d.IvaNavigation)
-                    .WithMany(p => p.ProductoBases)
-                    .HasForeignKey(d => d.Iva)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProductoBase_Iva");
-
-                entity.HasOne(d => d.RubroNavigation)
-                    .WithMany(p => p.ProductoBases)
-                    .HasForeignKey(d => d.Rubro)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProductoBase_Rubro");
 
                 entity.HasOne(d => d.UbicacionNavigation)
-                    .WithMany(p => p.ProductoBases)
+                    .WithMany(p => p.Productos)
                     .HasForeignKey(d => d.Ubicacion)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProductoBase_Ubicacion");
+                    .HasConstraintName("FK_Producto_Ubicacion");
             });
 
             modelBuilder.Entity<ProductoDetalle>(entity =>
@@ -207,16 +177,17 @@ namespace backmaree.Models
 
                 entity.Property(e => e.Cantidad).HasColumnType("decimal(18, 2)");
 
-                entity.HasOne(d => d.ProductoFkNavigation)
-                    .WithMany(p => p.ProductoDetalles)
-                    .HasForeignKey(d => d.ProductoFk)
-                    .HasConstraintName("FK_ProductoDetalle_ProductoFk");
-
-                entity.HasOne(d => d.ProductobaseFkNavigation)
-                    .WithMany(p => p.ProductoDetalles)
-                    .HasForeignKey(d => d.ProductobaseFk)
+                entity.HasOne(d => d.ProductoDetalleFkNavigation)
+                    .WithMany(p => p.ProductoDetalleProductoDetalleFkNavigations)
+                    .HasForeignKey(d => d.ProductoDetalleFk)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProductoDetalle_ProductobaseFk");
+                    .HasConstraintName("FK_ProductoDetalle_ProductoDetalleFk");
+
+                entity.HasOne(d => d.ProductoFkNavigation)
+                    .WithMany(p => p.ProductoDetalleProductoFkNavigations)
+                    .HasForeignKey(d => d.ProductoFk)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProductoDetalle_ProductoFk");
             });
 
             modelBuilder.Entity<ProductoIva>(entity =>
@@ -238,10 +209,6 @@ namespace backmaree.Models
             modelBuilder.Entity<ProductoUbicacion>(entity =>
             {
                 entity.ToTable("ProductoUbicacion");
-
-                entity.Property(e => e.Codigo)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
 
                 entity.Property(e => e.Detalle)
                     .HasMaxLength(50)

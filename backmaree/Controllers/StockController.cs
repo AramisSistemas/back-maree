@@ -8,14 +8,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backmaree.Controllers
 {
-    [Authorize]
+    //[Authorize]
+    [AllowAnonymous]
     [ApiController]
     [Route("[controller]")]
     public class StockController : Controller
     {
         private readonly IGenericService<Producto> _productoGenService;
         private readonly IGenericService<ProductoDetalle> _productoDetalleGenService;
-        private readonly IGenericService<ProductoBase> _productoBaseGenService;
+        private readonly IGenericService<Producto> _productoBaseGenService;
         private readonly IGenericService<ProductoIva> _ivaGenService;
         private readonly IGenericService<ProductoRubro> _rubroGenService;
         private readonly IGenericService<ProductoUbicacion> _ubicacionGenService;
@@ -27,7 +28,7 @@ namespace backmaree.Controllers
         public StockController(
             IGenericService<Producto> productoGenService,
             IGenericService<ProductoDetalle> productoDetalleGenService,
-            IGenericService<ProductoBase> productoBaseGenService,
+            IGenericService<Producto> productoBaseGenService,
             IGenericService<ProductoIva> ivaGenService,
             IGenericService<ProductoRubro> rubroGenService,
             IGenericService<ProductoUbicacion> ubicacionGenService,
@@ -53,11 +54,11 @@ namespace backmaree.Controllers
 
         //ABM PRODUCTOS BASE
         [HttpPost("AltaProductoBase")]
-        public IActionResult AltaProductoBase([FromForm] ProductoBaseDto model)
+        public IActionResult AltaProductoBase([FromForm] ProductoDto model)
         { 
             try
             {
-                ProductoBase? productobase = _mapper.Map<ProductoBase>(model);
+                Producto? productobase = _mapper.Map<Producto>(model);
                 _productoBaseGenService.Add(productobase);
                 _loggService.Log($"AltaProductoBase {model.Detalle}", "Stock", "Add", _userName);
                 return Ok("Correcto");
@@ -71,11 +72,11 @@ namespace backmaree.Controllers
         }
 
         [HttpPatch("UpdateProductoBase")]
-        public IActionResult UpdateProductoBase([FromForm] ProductoBaseDto model)
+        public IActionResult UpdateProductoBase([FromForm] ProductoDto model)
         {
             try
             {
-                ProductoBase? productobase = _mapper.Map<ProductoBase>(model);
+                Producto? productobase = _mapper.Map<Producto>(model);
                 _productoBaseGenService.Update(productobase);
                 _loggService.Log($"UpdateProductoBase {model.Detalle}", "Stock", "Update", _userName);
                 return Ok("Correcto");
@@ -89,11 +90,11 @@ namespace backmaree.Controllers
         }
 
         [HttpDelete("DeleteProductoBase")]
-        public IActionResult DeleteProductoBase([FromForm] ProductoBaseDto model)
+        public IActionResult DeleteProductoBase([FromForm] ProductoDto model)
         {
             try
             {
-                ProductoBase? productobase = _mapper.Map<ProductoBase>(model);
+                Producto? productobase = _mapper.Map<Producto>(model);
                 _productoBaseGenService.Delete(productobase.Id);
                 _loggService.Log($"DeleteProductoBase {model.Detalle}", "Stock", "Delete", _userName);
                 return Ok("Correcto");
@@ -122,7 +123,7 @@ namespace backmaree.Controllers
 
         //ABM PRODUCTOS
         [HttpPost("AltaProducto")]
-        public IActionResult AltaProducto([FromForm] ProductoBaseDto model)
+        public IActionResult AltaProducto([FromForm] ProductoDto model)
         {
             try
             {
@@ -144,7 +145,7 @@ namespace backmaree.Controllers
         {
             try
             {
-                var data = _stockService.GetProductos();
+                var data = _stockService.GetStock();
                 return Ok(data);
             }
             catch (Exception ex)
@@ -155,36 +156,36 @@ namespace backmaree.Controllers
 
         //ABM PRODUCTOS DETALLE
         [HttpPost("AltaProductoDetalle")]
-        public IActionResult AltaProductoDetalle([FromForm] ProductoBaseDto model)
+        public IActionResult AltaProductoDetalle([FromForm] ProductodetalleDto model)
         {
             try
             {
                 ProductoDetalle? productodetalle = _mapper.Map<ProductoDetalle>(model);
                 _productoDetalleGenService.Add(productodetalle);
-                _loggService.Log($"AltaProductoDetalle {model.ProductobaseFk} sobre {model.ProductoFk}", "Stock", "Add", _userName);
+                _loggService.Log($"AltaProductoDetalle {model.ProductoDetalleFk} sobre {model.ProductoFk}", "Stock", "Add", _userName);
                 return Ok("Correcto");
             }
             catch (Exception ex)
             {
-                _loggService.Log($"Error AltaProductoDetalle {model.ProductobaseFk} sobre {model.ProductoFk}", "Stock", "Add", _userName);
+                _loggService.Log($"Error AltaProductoDetalle {model.ProductoDetalleFk} sobre {model.ProductoFk}", "Stock", "Add", _userName);
                 // return error message if there was an exception
                 return BadRequest(new { message = ex.Message });
             }
         }
 
         [HttpPost("UpdateProductoDetalle")]
-        public IActionResult UpdateProductoDetalle([FromForm] ProductoBaseDto model)
+        public IActionResult UpdateProductoDetalle([FromForm] ProductodetalleDto model)
         {
             try
             {
                 ProductoDetalle? productodetalle = _mapper.Map<ProductoDetalle>(model);
                 _productoDetalleGenService.Add(productodetalle);
-                _loggService.Log($"UpdateProductoDetalle {model.ProductobaseFk} sobre {model.ProductoFk}", "Stock", "Update", _userName);
+                _loggService.Log($"UpdateProductoDetalle {model.ProductoDetalleFk} sobre {model.ProductoFk}", "Stock", "Update", _userName);
                 return Ok("Correcto");
             }
             catch (Exception ex)
             {
-                _loggService.Log($"Error UpdateProductoDetalle {model.ProductobaseFk} sobre {model.ProductoFk}", "Stock", "Update", _userName);
+                _loggService.Log($"Error UpdateProductoDetalle {model.ProductoDetalleFk} sobre {model.ProductoFk}", "Stock", "Update", _userName);
                 // return error message if there was an exception
                 return BadRequest(new { message = ex.Message });
             }

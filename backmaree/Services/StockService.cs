@@ -15,17 +15,17 @@ namespace backmaree.Services
             _storeProcedure = storeProcedure;
             _context = context;
         }
-        public StockDto GetProductos()
+        public StockDto GetStock()
         {
             try
             {
                 DataSet ds = _storeProcedure.SpWhithDataSetPure("ProductosGet");
                 List<ProductoDto> productos = new();
-                List<ProductoBaseDto> productoBases = new();
+                List<ProductodetalleDto> detalles = new();
                 DataTable dtProductos = new();
-                DataTable dtProductosBase = new();
+                DataTable dtdetalles = new();
                 dtProductos = ds.Tables[0];
-                dtProductosBase = ds.Tables[1];
+                dtdetalles = ds.Tables[1];
                 foreach (DataRow row in dtProductos.Rows)
                 {
                     productos.Add(new ProductoDto()
@@ -33,41 +33,38 @@ namespace backmaree.Services
                         Id = (long)row["Id"],
                         Codigo = row["Codigo"].ToString(),
                         Detalle = row["Detalle"].ToString(),
+                        Ubicacion = (int)row["Ubicacion"],
+                        UbicacionStr = row["UbicacionStr"].ToString(),
                         Rubro = (int)row["Rubro"],
                         RubroStr = row["RubroStr"].ToString(),
                         Costo = (decimal)row["Costo"],
                         Iva = (int)row["Iva"],
                         IvaDec = (decimal)row["IvaDec"],
+                        Internos = (decimal)row["Internos"],
+                        Tasa = (decimal)row["Tasa"],
+                        Stock = (decimal)row["Stock"],
+                        Compuesto = (bool)row["Compuesto"],
                         Precio = (decimal)row["Precio"],
-                        Tasa = (decimal)row["Tasa"]
+                        Tipo = row["Tipo"].ToString()
                     });
                 }
-                foreach (DataRow rowBase in dtProductosBase.Rows)
+                foreach (DataRow rowDetalles in dtdetalles.Rows)
                 {
-                    productoBases.Add(new ProductoBaseDto()
+                    detalles.Add(new ProductodetalleDto()
                     {
-                        Id = (long)rowBase["Id"],
-                        Codigo = rowBase["Codigo"].ToString(),
-                        Detalle = rowBase["Detalle"].ToString(),
-                        Rubro = (int)rowBase["Rubro"],
-                        RubroStr = rowBase["RubroStr"].ToString(),
-                        Costo = (decimal)rowBase["Costo"],
-                        Iva = (int)rowBase["Iva"],
-                        IvaDec = (decimal)rowBase["IvaDec"],
-                        Precio = (decimal)rowBase["Precio"],
-                        Internos = (decimal)rowBase["Internos"],
-                        ProductobaseFk = (long)rowBase["ProductobaseFk"],
-                        ProductoFk = (long)rowBase["ProductoFk"],
-                        Stock = (decimal)rowBase["Stock"],
-                        Ubicacion = (int)rowBase["Ubicacion"],
-                        UbicacionStr = rowBase["UbicacionStr"].ToString(),
-                        Tasa = (decimal)rowBase["Tasa"]
+                        Id = (long)rowDetalles["Id"],
+                        ProductoFk = (long)rowDetalles["ProductoFk"],
+                        ProductoDetalleFk = (long)rowDetalles["ProductoDetalleFk"],
+                        Cantidad = (decimal)rowDetalles["Cantidad"],
+                        Codigo = rowDetalles["Codigo"].ToString(),
+                        Detalle = rowDetalles["Detalle"].ToString(),
+                        Precio = (decimal)rowDetalles["Precio"]
                     });
                 };
 
                 StockDto lst = new();
-                lst.Productos = productos;
-                lst.ProductoBases = productoBases;
+                lst.Producto = productos;
+                lst.Detalles = detalles;
                 return lst;
             }
             catch (Exception ex)
@@ -76,7 +73,7 @@ namespace backmaree.Services
             }
         }
 
-        public IEnumerable<ProductoBaseDto> GetProductosBase()
+        public IEnumerable<ProductoDto> GetProductosBase()
         {
             throw new NotImplementedException();
         }

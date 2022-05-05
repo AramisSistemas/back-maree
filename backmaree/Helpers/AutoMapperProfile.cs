@@ -18,9 +18,8 @@ namespace backmaree.Helpers
 
             //stock
            
-            CreateMap<Producto, ProductoBaseDto>().ReverseMap();
-            CreateMap<ProductoBase, ProductoBaseDto>().ReverseMap();
-            CreateMap<ProductoDetalle, ProductoBaseDto>().ReverseMap();
+            CreateMap<Producto, ProductoDto>().ReverseMap();
+            CreateMap<ProductoDetalle, ProductodetalleDto>().ReverseMap();
 
         }
     }

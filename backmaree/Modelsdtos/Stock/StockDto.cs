@@ -2,7 +2,7 @@
 {
     public class StockDto
     {
-        public IEnumerable<ProductoDto> Productos { get; set; }
-        public IEnumerable<ProductoBaseDto> ProductoBases { get; set; }
+        public IEnumerable<ProductoDto> Producto { get; set; }  
+        public IEnumerable<ProductodetalleDto> Detalles { get; set; }
     }
 }

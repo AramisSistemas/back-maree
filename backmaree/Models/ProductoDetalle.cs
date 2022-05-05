@@ -5,12 +5,12 @@ namespace backmaree.Models
 {
     public partial class ProductoDetalle
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public long ProductoFk { get; set; }
-        public long ProductobaseFk { get; set; }
+        public long ProductoDetalleFk { get; set; }
         public decimal Cantidad { get; set; }
 
+        public virtual Producto ProductoDetalleFkNavigation { get; set; } = null!;
         public virtual Producto ProductoFkNavigation { get; set; } = null!;
-        public virtual ProductoBase ProductobaseFkNavigation { get; set; } = null!;
     }
 }
